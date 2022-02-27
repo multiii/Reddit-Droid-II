@@ -115,12 +115,11 @@ def get_selftext_page(selftext: str, page: int = 0) -> str:
 async def send_post(ctx: commands.Context, author: Union[discord.User, discord.Member], subreddit: str) -> None:
     post = get_post(subreddit=subreddit, bot=ctx.bot)
 
-    if post["over_18"]:
-        if not ctx.channel.nsfw:
-            return await resources.error.embed(
-                msg=ctx.message,
-                title="Sorry it's NSFW!",
-                description="Please retry this command in an NSFW channel.",
-                image_url="https://i.imgur.com/oe4iK5i.gif")
+    if post.over_18 and not ctx.channel.nsfw:
+        return await resources.error.embed(
+            msg=ctx.message,
+            title="Sorry it's NSFW!",
+            description="Please retry this command in an NSFW channel.",
+            image_url="https://i.imgur.com/oe4iK5i.gif")
 
     await views.PageMenu(ctx.author, ctx.bot, post, 0).start(ctx)

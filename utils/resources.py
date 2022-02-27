@@ -112,3 +112,4 @@ class Post(pydantic.BaseModel):
     subreddit: str
     url: Optional[str]
     ups: int
+    over_18: bool
