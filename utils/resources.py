@@ -1,7 +1,7 @@
 # . . . Imports . . . #
 
 import pydantic
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
 
 import nextcord as discord
 
@@ -98,11 +98,11 @@ error = Resource(color=error_c)
 
 class Comment(pydantic.BaseModel):
     author: str
-    title: str
+    title: Optional[str]
     body: str
     subreddit: str
     ups: int
-    replies: int
+    replies: Dict
 
 
 class Post(pydantic.BaseModel):
@@ -110,6 +110,7 @@ class Post(pydantic.BaseModel):
     title: str
     selftext: str
     subreddit: str
+    permalink: str
     url: Optional[str]
     ups: int
     over_18: bool

@@ -24,7 +24,7 @@ class CommentMenu(menus.ButtonMenu):
             title=post.title,
             description=comment.body,
             thumbnail_url=self.author.display_avatar.url,
-            footer_text=f"r/{comment.subreddit} • 👍{comment.ups} • 💬{comment.replies}",
+            footer_text=f"r/{comment.subreddit} • 👍{comment.ups} • 💬{len(comment.replies)}",
             timestamp=dt.datetime.now()
         )
 
@@ -36,7 +36,7 @@ class CommentMenu(menus.ButtonMenu):
 
     @discord.ui.button(emoji="<:cross:906925217828446268>", style=discord.ButtonStyle.danger)
     async def on_cancel(self, button, interaction):
-        await self.stop()
+        self.stop()
 
         await interaction.message.delete()
 
@@ -75,12 +75,13 @@ class Dropdown(discord.ui.Select):
 
 
 class PageMenu(menus.ButtonMenu):
-    def __init__(self, author, bot, post, page):
+    def __init__(self, author, bot, post, page, inter=None):
         super().__init__(disable_buttons_after=False)
         self.author = author
         self.bot = bot
         self.post = post
         self.page = page
+        self.inter = inter
 
         self.dropdown = Dropdown(self.author, self.bot, self.post)
 
@@ -105,6 +106,11 @@ class PageMenu(menus.ButtonMenu):
 
     async def send_initial_message(self, ctx, channel):
         embed = await self.get_page_embed(self.page)
+
+        if self.inter is not None:
+          await self.inter.send(embed=embed, view=self)
+          return await self.inter.original_message()
+      
         return await channel.send(embed=embed, view=self)
 
     @discord.ui.button(label="Prev. Page")

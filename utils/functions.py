@@ -1,7 +1,7 @@
 import os
 import random
 import requests
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 
 import nextcord as discord
 from nextcord.ext import commands
@@ -78,9 +78,11 @@ def get_post(subreddit: str, bot: commands.Bot) -> Dict:
 
     res = requests.get(
         f'https://oauth.reddit.com/r/{subreddit}/hot.json?sort=new&limit=100', headers=headers).json()
-    print(len(res['data']['children']))
 
-    post_dict = random.choice(res['data']['children'])['data']
+    r = random.choice(res['data']['children'])
+    print(r)
+  
+    post_dict = r['data']
 
     return resources.Post(**post_dict)
 
@@ -112,14 +114,38 @@ def get_selftext_page(selftext: str, page: int = 0) -> str:
     return f"{description}\n\n**Page {page + 1} of {round((len(selftext) + 438) / 1750)}**"
 
 
-async def send_post(ctx: commands.Context, author: Union[discord.User, discord.Member], subreddit: str) -> None:
-    post = get_post(subreddit=subreddit, bot=ctx.bot)
+async def send_post(
+  ctx: Optional[commands.Context] = None,
+  inter: Optional[discord.Interaction] = None,
+  author: Union[discord.User, discord.Member] = None,
+  subreddit: str = ""
+) -> None:
+    fields = []
 
-    if post.over_18 and not ctx.channel.nsfw:
+    if ctx is not None:
+      fields.append(ctx.channel)
+      fields.append(ctx.author)
+      fields.append(ctx.bot)
+      fields.append(None)
+      fields.append({"ctx": ctx})
+
+    else:
+      fields.append(inter.channel)
+      fields.append(inter.user)
+      fields.append(inter.client)
+      fields.append(inter)
+      fields.append({"interaction": inter})
+  
+    channel, user, bot, inter, kwargs = fields
+  
+    post = get_post(subreddit=subreddit, bot=bot)
+
+    if post.over_18 and not channel.nsfw:
         return await resources.error.embed(
-            msg=ctx.message,
+            msg=channel,
             title="Sorry it's NSFW!",
             description="Please retry this command in an NSFW channel.",
-            image_url="https://i.imgur.com/oe4iK5i.gif")
+            image_url="https://i.imgur.com/oe4iK5i.gif"
+        )
 
-    await views.PageMenu(ctx.author, ctx.bot, post, 0).start(ctx)
+    await views.PageMenu(user, bot, post, 0, inter).start(**kwargs)

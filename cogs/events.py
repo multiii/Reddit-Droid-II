@@ -45,7 +45,7 @@ class Events(commands.Cog):
       subreddit = args[0].split(prefix)[1].strip()
 
     if self.bot.get_command(subreddit) is None:
-      await send_post(ctx, msg.author, subreddit)      
+      await send_post(ctx=ctx, author=msg.author, subreddit=subreddit)      
 
 def setup(bot):
   bot.add_cog(Events(bot))
