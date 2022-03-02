@@ -1,6 +1,7 @@
 import nextcord as discord
 from nextcord.ext import commands, tasks
 
+import check
 from utils.functions import get_numbers_from_str, get_reddit_token, send_post
 
 class Events(commands.Cog):
@@ -45,7 +46,47 @@ class Events(commands.Cog):
       subreddit = args[0].split(prefix)[1].strip()
 
     if self.bot.get_command(subreddit) is None:
-      await send_post(ctx=ctx, author=msg.author, subreddit=subreddit)      
+      await send_post(ctx=ctx, author=msg.author, subreddit=subreddit)  
+
+  # Commands
+
+  @commands.command(name="aeval", brief="eval async functions!")
+  @check.has_user_id(394320584089010179)
+  async def _aeval(self, ctx, *, exp):
+    try:
+      resp = await eval(exp)
+
+      await resources.default.embed(
+        msg=ctx.message,
+        title="Code evaluted!",
+        description=f"```py\n{resp}\n```"
+      )
+
+    except Exception as err:
+      await resources.error.embed(
+        msg=ctx.message,
+        title="ERROR!",
+        description=f"```py\n{err}\n```"
+      )
+
+  @commands.command(name="eval", brief="eval normal functions!")
+  @check.has_user_id(394320584089010179)
+  async def _eval(self, ctx, *, exp):
+    try:
+      resp = eval(exp)
+
+      await resources.default.embed(
+        msg=ctx.message,
+        title="Code evaluted!",
+        description=f"```py\n{resp}\n```"
+      )
+
+    except Exception as err:
+      await resources.error.embed(
+        msg=ctx.message,
+        title="ERROR!",
+        description=f"```py\n{err}\n```"
+      )
 
 def setup(bot):
   bot.add_cog(Events(bot))
