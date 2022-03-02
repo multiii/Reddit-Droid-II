@@ -87,6 +87,7 @@ error_c = 0xFF6347
 
 # Special Emotes
 
+alert_e = "<:alert:935890334003658793>"
 
 # Resource Objects
 

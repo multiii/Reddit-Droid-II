@@ -121,12 +121,13 @@ class CustomHelpCommand(commands.HelpCommand):
                 title=self.title,
                 description=(
                     f"""
-                  __**Info:**__
-                  **• A bot that allows you to browse through reddit, on discord!**
-                  **• Inspired by Reddit Droid - {await ctx.bot.fetch_user(807097314907783178)}**
-                  **• Version: Beta 0.4**
+                  {resources.alert_e} **Info:**
+                  
+                  > **•** A bot that allows you to browse through reddit, on discord!
+                  > **•** Inspired by Reddit Droid - {await ctx.bot.fetch_user(807097314907783178)}
+                  > **•** Version: Beta 0.4
 
-                  **• Made by {await ctx.bot.fetch_user(394320584089010179)}**
+                  > **•** Made by {await ctx.bot.fetch_user(394320584089010179)}
                   
                   Access my help menu: `{ctx.clean_prefix}help`
                   Learn more about a command: `{ctx.clean_prefix}help <command>`"""
