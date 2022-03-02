@@ -2,6 +2,7 @@ import nextcord as discord
 from nextcord.ext import commands, tasks
 
 import check
+from utils import resources
 from utils.functions import get_numbers_from_str, get_reddit_token, send_post
 
 class Events(commands.Cog):
